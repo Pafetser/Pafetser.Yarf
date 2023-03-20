@@ -5,7 +5,12 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pafetser.Yarf", "Pafetser.Yarf\Pafetser.Yarf.csproj", "{7D73D063-3FD6-469A-8C8E-B494A25383F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pafetser.Yarf.Tests", "Pafetser.Yarf.Tests\Pafetser.Yarf.Tests.csproj", "{168159B9-F876-411A-ACAE-1E6AFFF4649E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pafetser.Yarf.Tests", "Pafetser.Yarf.Tests\Pafetser.Yarf.Tests.csproj", "{168159B9-F876-411A-ACAE-1E6AFFF4649E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{974D0828-CC47-4593-B318-37F5BDB19287}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
