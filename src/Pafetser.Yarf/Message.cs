@@ -45,49 +45,11 @@ public abstract record Message
     }
 }
 
-public record Information : Message
-{
-    public Information() : base()
-    {
-    }
-    [SetsRequiredMembers]
-    public Information(string information, string? code = default) : base(information, code)
-    {
-    }
-    public static implicit operator Information(string description) => new Information(description);
-    public static implicit operator string(Information information) => information.ToString();
-    public override string ToString()
-    {
-        return base.ToString();
-    }
-}
 
-public record Warning : Message
-{
-    public Warning() : base()
-    {
-    }
-    [SetsRequiredMembers]
-    public Warning(string warning) : base(warning)
-    {
-    }
 
-    public static implicit operator Warning(string value) => new Warning(value);
-    public static implicit operator string(Warning warning) => warning.Description;
-}
 
-public record Error : Message
-{
-    public Error() : base()
-    {
-    }
-    [SetsRequiredMembers]
-    public Error(string error) : base(error)
-    {
-    }
-    public static implicit operator Error(string value) => new Error(value);
-    public static implicit operator string(Error error) => error.Description;
-}
+
+
 
 public record ValidationError : Error
 {
