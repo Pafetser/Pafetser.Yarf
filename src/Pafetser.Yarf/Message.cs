@@ -52,32 +52,3 @@ public abstract record Message
 
 
 
-public record ExceptionalError : Error
-{
-    public ExceptionalError() : base()
-    {
-    }
-    [SetsRequiredMembers]
-    public ExceptionalError(Exception ex) : base(ex?.ToString()!)
-    {
-        Exception = ex!;
-    }
-
-    private readonly Exception _exception = default!;
-    public required Exception Exception
-    {
-        get => _exception;
-        init
-        {
-            if (value == default) throw new ArgumentNullException(nameof(Exception));
-            _exception = value;
-        }
-    }
-    public override string ToString()
-    {
-        return Exception.ToString();
-    }
-
-    public static implicit operator ExceptionalError(Exception ex) => new ExceptionalError(ex);
-    public static implicit operator Exception(ExceptionalError exceptionalError) => exceptionalError.Exception;
-}

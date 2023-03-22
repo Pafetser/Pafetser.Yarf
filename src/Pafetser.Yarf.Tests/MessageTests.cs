@@ -206,5 +206,40 @@ namespace Pafetser.Yarf.Tests
                 Assert.Equal(result, test);
             }
         }
+
+        public class ExceptionalErrorTests
+        {
+            public static List<object[]> ShouldThrowData => new List<object[]>()
+                {
+                    new object[] { typeof(ArgumentNullException), null, null },
+                    new object[] { typeof(ArgumentNullException), "", null },
+                    new object[] { typeof(ArgumentEmptyException), null, "" },
+                    new object[] { typeof(ArgumentNullException), " ", null },
+                    new object[] { typeof(ArgumentEmptyException), null, " " },
+                    new object[] { typeof(ArgumentNullException), "       ", null },
+                    new object[] { typeof(ArgumentEmptyException), null, "     " },
+                    new object[] { typeof(ArgumentEmptyException), "", "" },
+                    new object[] { typeof(ArgumentEmptyException), "", " " },
+                    new object[] { typeof(ArgumentEmptyException), " ", "" },
+                    new object[] { typeof(ArgumentEmptyException), "", "     " },
+                    new object[] { typeof(ArgumentEmptyException), "     ", "" },
+                    new object[] { typeof(ArgumentEmptyException), "       ", "      " },
+                };
+
+            public static List<object[]> ShouldSucceedData => new List<object[]>()
+                {
+                    new object[] { "prop1", "test", null, "test (prop1)" },
+                    new object[] { "prop1", "test", "", "test (prop1)" },
+                    new object[] { "prop1", "test", " ", "test (prop1)" },
+                    new object[] { "prop1", "test", "   ", "test (prop1)" },
+                    new object[] { "prop1", "test", "key", "[key] test (prop1)" },
+                };
+
+            [Fact]
+            public void ShouldThrowWhenUsingConstructor()
+            {
+                Assert.Throws<ArgumentNullException>(() => new ExceptionalError(null));
+            }
+        }
     }
 }
