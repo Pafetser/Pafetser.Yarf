@@ -51,34 +51,6 @@ public abstract record Message
 
 
 
-public record ValidationError : Error
-{
-    public ValidationError() : base()
-    {
-    }
-    [SetsRequiredMembers]
-    public ValidationError(string source, string error) : base(error)
-    {
-        Source = source;
-    }
-
-    private readonly string _source = default!;
-    public required string Source
-    {
-        get => _source;
-        init
-        {
-            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentEmptyException(nameof(Source));
-            _source = value;
-        }
-    }
-    public override string ToString()
-    {
-        return $"[{Source}] {base.ToString()}";
-    }
-    public static implicit operator ValidationError((string source, string value) item) => new ValidationError(item.source, item.value);
-    public static implicit operator string(ValidationError validationError) => validationError.ToString();
-}
 
 public record ExceptionalError : Error
 {

@@ -14,6 +14,7 @@ namespace Pafetser.Yarf.Tests
             public abstract Func<string, T> ConstructWithDescriptionOnly { get; }
             public abstract Func<string, T> InitializeWithDescriptionOnly { get; }
             public abstract Func<string, string, T> ConstructWithDescriptionAndCode { get; }
+            public abstract Func<string, string, T> InitializeWithDescriptionAndCode { get; }
             public abstract Func<string, T> ImplicitOperateToMessage { get; }
             public abstract Func<string, string, string> ImplicitOperateToString { get; }
             public static List<object[]> ShouldThrowData => new List<object[]>()
@@ -57,6 +58,16 @@ namespace Pafetser.Yarf.Tests
                 Assert.Equal(toString, message.ToString());
             }
 
+            [Theory]
+            [MemberData(nameof(ShouldSucceedData))]
+            public void ShouldSucceedUsingInitializerAndHaveToString(string description, string code, string toString)
+            {
+                var message = InitializeWithDescriptionAndCode(description, code);
+                Assert.Equal(description, message.Description);
+                Assert.Equal(code, message.Code);
+                Assert.Equal(toString, message.ToString());
+            }
+
             [Fact]
             public void ShouldConstructUsingImplicitOperator()
             {
@@ -88,6 +99,8 @@ namespace Pafetser.Yarf.Tests
             public override Func<string, Information> ImplicitOperateToMessage => (description) => description;
 
             public override Func<string, string, string> ImplicitOperateToString => (description, code) => new Information(description, code);
+
+            public override Func<string, string, Information> InitializeWithDescriptionAndCode => (description, code) => new Information() { Description= description, Code = code };
         }
         public class WarningTests : BasicMessageTests<Warning>
         {
@@ -100,6 +113,7 @@ namespace Pafetser.Yarf.Tests
             public override Func<string, Warning> ImplicitOperateToMessage => (description) => description;
 
             public override Func<string, string, string> ImplicitOperateToString => (description, code) => new Warning(description, code);
+            public override Func<string, string, Warning> InitializeWithDescriptionAndCode => (description, code) => new Warning() { Description = description, Code = code };
         }
 
         public class ErrorTests : BasicMessageTests<Error>
@@ -113,6 +127,84 @@ namespace Pafetser.Yarf.Tests
             public override Func<string, Error> ImplicitOperateToMessage => (description) => description;
 
             public override Func<string, string, string> ImplicitOperateToString => (description, code) => new Error(description, code);
+            public override Func<string, string, Error> InitializeWithDescriptionAndCode => (description, code) => new Error() { Description = description, Code = code };
+        }
+        public class ValidationErrorTests
+        {
+            public static List<object[]> ShouldThrowData => new List<object[]>()
+                {
+                    new object[] { typeof(ArgumentNullException), null, null },
+                    new object[] { typeof(ArgumentNullException), "", null },
+                    new object[] { typeof(ArgumentEmptyException), null, "" },
+                    new object[] { typeof(ArgumentNullException), " ", null },
+                    new object[] { typeof(ArgumentEmptyException), null, " " },
+                    new object[] { typeof(ArgumentNullException), "       ", null },
+                    new object[] { typeof(ArgumentEmptyException), null, "     " },
+                    new object[] { typeof(ArgumentEmptyException), "", "" },
+                    new object[] { typeof(ArgumentEmptyException), "", " " },
+                    new object[] { typeof(ArgumentEmptyException), " ", "" },
+                    new object[] { typeof(ArgumentEmptyException), "", "     " },
+                    new object[] { typeof(ArgumentEmptyException), "     ", "" },
+                    new object[] { typeof(ArgumentEmptyException), "       ", "      " },
+                };
+
+            public static List<object[]> ShouldSucceedData => new List<object[]>()
+                {
+                    new object[] { "prop1", "test", null, "test (prop1)" },
+                    new object[] { "prop1", "test", "", "test (prop1)" },
+                    new object[] { "prop1", "test", " ", "test (prop1)" },
+                    new object[] { "prop1", "test", "   ", "test (prop1)" },
+                    new object[] { "prop1", "test", "key", "[key] test (prop1)" },
+                };
+
+            [Theory]
+            [MemberData(nameof(ShouldThrowData))]
+            public void ShouldThrowWhenUsingConstructor(Type expectedExceptionType, string source, string description)
+            {
+                Assert.Throws(expectedExceptionType, () => new ValidationError(source, description));
+            }
+
+            [Theory]
+            [MemberData(nameof(ShouldThrowData))]
+            public void ShouldThrowWhenUsingObjectInitializer(Type expectedExceptionType, string source, string description)
+            {
+                Assert.Throws(expectedExceptionType, () => new ValidationError() { Description = description, Source = source });
+            }
+
+            [Theory]
+            [MemberData(nameof(ShouldSucceedData))]
+            public void ShouldSucceedUsingConstructorAndHaveToString(string source, string description, string code, string toString)
+            {
+                var message = new ValidationError(source, description, code);
+                Assert.Equal(description, message.Description);
+                Assert.Equal(code, message.Code);
+                Assert.Equal(source, message.Source);
+                Assert.Equal(toString, message.ToString());
+            }
+
+            [Theory]
+            [MemberData(nameof(ShouldSucceedData))]
+            public void ShouldSucceedUsingInitializerAndHaveToString(string source, string description, string code, string toString)
+            {
+                var message = new ValidationError() { Code= code, Source = source, Description = description };
+                Assert.Equal(description, message.Description);
+                Assert.Equal(code, message.Code);
+                Assert.Equal(source, message.Source);
+                Assert.Equal(toString, message.ToString());
+            }
+
+
+            [Theory]
+            [InlineData("prop1", "test", null, "test (prop1)")]
+            [InlineData("prop1", "test", "", "test (prop1)")]
+            [InlineData("prop1", "test", " ", "test (prop1)")]
+            [InlineData("prop1", "test", "    ", "test (prop1)")]
+            [InlineData("prop1", "test", "code", "[code] test (prop1)")]
+            public void ShouldDeconstructUsingImplicitOperator(string source, string description, string code, string result)
+            {
+                string test = new ValidationError(source, description, code);
+                Assert.Equal(result, test);
+            }
         }
     }
 }
