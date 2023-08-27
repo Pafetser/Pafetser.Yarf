@@ -3,6 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Pafetser.Yarf;
 
+/// <summary>
+/// Describes any message that provides more additional information about an <see cref="IResult"/>
+/// </summary>
 public abstract record Message
 {
     private readonly string _description = default!;
@@ -10,7 +13,7 @@ public abstract record Message
     {
     }
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="description"></param>
     /// <param name="code"></param>
@@ -22,9 +25,9 @@ public abstract record Message
         Description = description;
         Code = code;
     }
-    
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="ArgumentEmptyException"></exception>
@@ -44,11 +47,3 @@ public abstract record Message
         return $"{(!string.IsNullOrWhiteSpace(Code) ? $"[{Code}] " : null)}{Description}";
     }
 }
-
-
-
-
-
-
-
-

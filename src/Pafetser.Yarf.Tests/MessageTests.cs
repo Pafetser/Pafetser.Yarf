@@ -4,10 +4,6 @@ namespace Pafetser.Yarf.Tests
 {
     public class MessageTests
     {
-        [Fact]
-        public void Test1()
-        {
-        }
 
         public abstract class BasicMessageTests<T> where T:  Message
         {
